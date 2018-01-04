@@ -17,10 +17,7 @@ def get_data():
     month = request.args.get('month', default = 1, type = int)
 
     # read the parking violation json data
-    df = pd.read_json(open('data/parking_violations_%d_%d.json' %(month, year), 'r'))
-
-    # convert timestamp data to proper format
-    df['timestamp'] = df['issue_date_and_time'].dt.strftime("%Y-%m-%d %H:00:00")
+    df = pd.read_json('data/parking_violations_%d_%d.json.gz' %(month, year), convert_dates=False)
 
     # return data
     return df.to_json(orient='records')
