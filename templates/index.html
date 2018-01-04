@@ -1,0 +1,281 @@
+<html>
+<head>
+  <title>Philly Parking Violations</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.9/dc.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="/static/css/leaflet.zoomhome.css"/>
+  <link rel="stylesheet" href="/static/css/keen-dashboards.css">
+  <link rel="stylesheet" href="/static/css/custom.css">
+
+  <!-- JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="/static/js/leaflet.zoomhome.min.js"></script>
+
+  <!-- DC.js requires D3@3 and d3-hexbin needs D3@4 -->
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+    d3version3 = d3
+    window.d3 = null
+  </script>
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script>
+    d3version4 = d3
+  </script>
+
+  <!-- leaflet and hexbins -->
+  <script src="https://unpkg.com/@mapbox/leaflet-pip@latest/leaflet-pip.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+  <script src="/static/js/leaflet-d3.min.js" charset="utf-8"></script>
+
+  <!-- Load D3.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.3.14/crossfilter.min.js"></script>
+  <script src="/static/js/dc.min.js"></script>
+
+  <!-- Bootstrap -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+</head>
+
+<body class="application">
+
+  <!-- Navbar  -->
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Visualizing Philly Parking Violations</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+
+    <!-- Loading animation -->
+    <div id="loading">
+      <div id="loading-image" class='loader' alt="Loading..."></div>
+    </div>
+
+    <!-- 1st row -->
+    <div class="row">
+
+      <div class="col-xs-12 col-md-4">
+
+        <!-- Intro panel -->
+        <div class='panel' style='padding: 5px'>
+          <p>Welcome! Choose a month and year below to check out parking violation trends
+            across Philadelphia during that time.
+          </p>
+
+          <!-- Reset all filters -->
+          <span id="reset-all" style="display: none">
+            <p><a href="javascript:dc.filterAll();dc.redrawAll(); ">[reset all filters]</a></p>
+          </span>
+
+          <!-- Form to choose month/year -->
+          <div class="form-group">
+            <label>Month</label>
+            <select class="selectpicker form-control" id='month'>
+              <option selected>January</option>
+              <option>February</option>
+              <option>March</option>
+              <option>April</option>
+              <option>May</option>
+              <option>June</option>
+              <option>July</option>
+              <option>August</option>
+              <option>September</option>
+              <option>October</option>
+              <option>November</option>
+              <option>December</option>
+            </select>
+            <label>Year</label>
+            <select class="selectpicker form-control" id='year'>
+              <option>2012</option>
+              <option>2013</option>
+              <option>2014</option>
+              <option>2015</option>
+              <option selected>2016</option>
+            </select>
+            <button id="getDataButton" class="btn btn-default load-data-btn" type="button"><b>Go!</b></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1st row, 2nd column -->
+      <div class="col-xs-6 col-md-4">
+
+        <!-- Number of tickets -->
+        <div class="panel chart-wrapper">
+          <div class="chart-title">
+            Number of Tickets
+          </div>
+          <div class="chart-stage">
+            <div id="number-records-nd"></div>
+          </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="panel chart-wrapper">
+          <div class="chart-title">
+            Total Revenue
+          </div>
+          <div class="chart-stage">
+            <div id="number-revenue-nd"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1st row, 3rd column -->
+      <div class="col-xs-6 col-md-4">
+
+        <!-- Issuing agency -->
+        <div class="panel chart-wrapper">
+          <div class="chart-title">
+            <span id="agency-chart-reset" title='Issuing Agency'
+              data-reset-script="javascript:agencyChart.filterAll();dc.redrawAll(); ">
+              Issuing Agency
+            </span>
+          </div>
+          <div class="chart-notes" id="agency-chart-filter" style="display: none">
+          </div>
+          <div class="chart-stage">
+            <div id="agency-row-chart" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2nd row -->
+    <div class="row">
+
+      <!-- Tickets Per Hour -->
+      <div class="col-12">
+
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            <span id="time-chart-reset" title='Tickets Per Hour'
+              data-reset-script="javascript:timeChart.filterAll();dc.redrawAll(); ">
+              Tickets Per Hour
+            </span>
+            <div class="chart-notes" id="time-chart-filter" style="display: none">
+            </div>
+          </div>
+          <div class="chart-stage">
+            <div id="time-chart" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3rd row -->
+    <div class='row'>
+
+      <div class="col-xs-6 col-md-3">
+
+        <!-- Zip Codes -->
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            <span id="zipcode-chart-reset" title='By Zip Code'
+              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll(); ">
+              By Zip Code
+            </span>
+          </div>
+          <div class="chart-stage">
+            <div id="zipcode-row-chart" style="width: 115%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-6 col-md-3">
+
+        <!-- Day-Hour Heat Map -->
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            <span id="dayhour-chart-reset" title='Hourly Average Per Week'
+              data-reset-script="javascript:heatChart.filterAll();dc.redrawAll(); ">
+              Hourly Average Per Week
+            </span>
+          </div>
+          <div class="chart-stage">
+            <div id="day-hour-chart" style="width: 115%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-6">
+
+        <!-- Map  -->
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            <span id="map-reset" title='Density of Tickets across Philadelphia'
+              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll(); ">
+              Density of Tickets across Philadelphia
+            </span>
+          </div>
+          <script>
+            $('#getDataButton').on('click', function (e) {
+              var month = document.getElementById('month').value;
+              var year = document.getElementById('year').value;
+              month = new Date(Date.parse(month +" 1, 2018")).getMonth()+1;
+
+              $('#loading').show();
+              map.remove();
+              hexLayer.data([]);
+              dc.filterAll();
+              getDataJSON(makeMap, month, year);
+          })
+          </script>
+
+          <div class="chart-stage">
+            <div id="map"></div>
+          </div>
+        </div>
+
+        <!-- Type of ticket -->
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            <span id="desc-chart-reset" title='Types of Tickets'
+              data-reset-script="javascript:descChart.filterAll();dc.redrawAll(); ">
+              Types of Tickets
+            </span>
+          </div>
+          <div class="chart-stage">
+            <div id="ticket-type-row-chart" style="width: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+	<footer id="footer">
+
+    <div class="social icons">
+      <a href="https://github.com/nickhand" class="icon circle fa-github"><span class="label">Github</span></a>
+      <a href="https://twitter.com/nicholashand" class="icon circle fa-twitter"><span class="label">Twitter</span></a>
+      <a href="https://www.linkedin.com/in/nickhand1" class="icon circle fa-linkedin"><span class="label">Linkedin</span></a>
+    </div>
+ 		<div class="copyright">
+			<div class="menu">
+				<p>&copy; Nick Hand 2018</p>
+				<p>Data via <a href="https://www.opendataphilly.org/dataset/parking-violations" target="_blank">OpenDataPhilly;</a>
+         Dashboard template via <a href="http://keen.github.io/dashboards/" target="_blank">keen.io</a>
+        </p>
+			</div>
+    </div>
+	</footer>
+  </div>
+
+  <!-- the zip code geojson data -->
+  <script type="text/javascript" src="/static/js/zip-codes.js"></script>
+
+  <!-- the main charting javascript -->
+  <script type="text/javascript" src="/static/js/main.js"></script>
+
+</body>
+</html>
