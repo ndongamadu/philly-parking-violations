@@ -2,6 +2,10 @@ import pandas as pd
 from flask import Flask
 from flask import render_template, request
 import json
+import os
+
+# current directory
+curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 
@@ -17,7 +21,8 @@ def get_data():
     month = request.args.get('month', default = 1, type = int)
 
     # read the parking violation json data
-    df = pd.read_json('data/parking_violations_%d_%d.json.gz' %(month, year), convert_dates=False)
+    filename = os.path.join(curr_dir, 'data', 'parking_violations_%d_%d.json.gz' %(month, year))
+    df = pd.read_json(filename, convert_dates=False)
 
     # return data
     return df.to_json(orient='records')
