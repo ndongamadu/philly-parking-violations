@@ -246,11 +246,18 @@
               var year = document.getElementById('year').value;
               month = new Date(Date.parse(month +" 1, 2018")).getMonth()+1;
 
+              // show the loading page
               $('#loading').show();
+
+              // clear map
               map.remove();
               hexLayer.data([]);
+
+              // clear filters
               dc.filterAll();
-              getDataJSON(makeMap, month, year);
+
+              // get the new data
+              getDataJSON(makeDashboard, month, year);
           })
           </script>
 
