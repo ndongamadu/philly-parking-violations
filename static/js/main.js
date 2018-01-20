@@ -191,7 +191,7 @@ function makeDashboard(recordsJson) {
               },
               {
                 label: "# of Tickets",
-                format: function (d) { console.log(d); return d.value }
+                format: function (d) { return d.value }
               }
               ])
     .sortBy(function (d) { return d.value })
@@ -224,7 +224,6 @@ function makeDashboard(recordsJson) {
       var t = document.getElementById("time-chart-filter");
       if(filters.length) {
           var range = filters[0];
-          console.log('range:', range[0], range[1]);
           var format = d3version3.time.format("%m/%d/%Y");
           t.innerHTML = "<b>selected</b>: " + format(range[0]) + ' to ' + format(range[1]);
           t.style.display = 'block';
@@ -315,10 +314,10 @@ function makeDashboard(recordsJson) {
       var t = document.getElementById(id);
       var this_script = $('#'+id).data('reset-script');
       if (filters.length) {
-          t.innerHTML = t.title + " <a href=" + this_script + ">[reset]</a>";
+          t.innerHTML = "<a href=" + this_script + ">[reset]</a>";
       }
       else {
-        t.innerHTML = t.title;
+        t.innerHTML = '';
       }
     }
 
@@ -462,23 +461,17 @@ function makeDashboard(recordsJson) {
       jQuery.each(clickedLayers, function(i, layer) {
         var code = +layer.feature.properties.CODE;
         var filters = zipcodeChart.filters();
-        console.log("FILTERS = ", filters);
-        console.log("CODE = ", +code);
         if (filters.length == 0) {
           zipcodeChart.replaceFilter([[code]]);
         }
         else {
           var index = filters.indexOf(code);
           if (index == -1) {
-            console.log("HEY 1");
-            console.log(filters);
-            console.log("HEY 2");
             filters.push(code);
           } else {
             filters.splice(index, 1);
           }
           zipcodeChart.replaceFilter([filters]);
-          console.log(filters);
         }
         dc.redrawAll();
       });

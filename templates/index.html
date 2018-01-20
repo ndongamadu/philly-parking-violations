@@ -71,7 +71,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
           <!-- Reset all filters -->
-          <a href="javascript:dc.filterAll();dc.redrawAll(); ">[reset all filters]</a>
+          <a href="javascript:dc.filterAll();dc.redrawAll();">[reset all filters]</a>
         </li>
       </ul>
     </div>
@@ -95,7 +95,6 @@
       </div>
     </div>
 
-    <!-- 1st row -->
     <div class="row">
       <div class="col-xs-12 col-md-6">
 
@@ -103,14 +102,14 @@
         <div class='panel' style='padding: 5px'>
           <p style="font-size: 16px"><b>Welcome!</b></p>
 
-          <p>Choose a month and year to check out
+          <p>Choose a month and year to explore
             parking violation trends across Philadelphia during that time.
             Data ranges from 2012 to 2016.
           </p>
           <p>
             <b>Applying filters:</b>
             The charts and map below are interactive, and the
-            data can be explored in several different ways via filters.
+            data can be filtered in several different ways.
             Available filters include: date range, hour and day of week,
             zip code, ticket issuing agency, and type of ticket.
           </p>
@@ -123,8 +122,8 @@
         <div class="row">
           <div class="col-xs-6 col-md-6">
 
+            <!-- Month/Year Form -->
             <div class="panel" style='padding: 5px; font-size: 16px'>
-              <!-- Form to choose month/year -->
               <div class="form-group row" style='margin-bottom: 20px'>
                 <div class='col-md-12'>
 
@@ -163,6 +162,7 @@
               <button id="getDataButton" class="btn btn-default load-data-btn" type="button"><b>Go!</b></button>
             </div>
           </div>
+
           <div class="col-xs-6 col-md-6">
 
             <!-- Number of tickets -->
@@ -188,59 +188,97 @@
         </div>
       </div>
 
-      <!-- 1st row, 3rd column -->
       <div class="col-xs-12 col-md-6">
+
         <!-- Most common tickets -->
         <div class="chart-wrapper">
           <div class="chart-title">
               Top 10 Most Common Tickets
-            </span>
+              <a onclick="toggle(this, '#top-10-help')">[show help]</a>
+          </div>
+          <div class="chart-notes" id="top-10-help" style="display: none">
+            This table gives the top 10 most common ticket locations for the
+            currently selected data. The table is automatically
+            updated as filters are applied to the charts below.
           </div>
           <table class="table table-responsive table-hover hot-spot-table">
           </table>
         </div>
+
+        <script type="text/javascript">
+          function toggle (t, id) {
+            if (t.innerHTML == "[hide help]") {
+              t.innerHTML = "[show help]";
+              $(id).hide()
+            } else {
+              t.innerHTML = "[hide help]";
+              $(id).show();
+            }
+          }
+        </script>
+
       </div>
     </div>
 
-    <!-- 2nd row -->
     <div class="row">
-
-      <!-- Tickets Per Hour -->
       <div class="col-12">
 
+        <!-- Tickets Per Hour -->
         <div class="chart-wrapper">
+
           <div class="chart-title">
-            <span id="time-chart-reset" title='Tickets Per Hour'
-              data-reset-script="javascript:timeChart.filterAll();dc.redrawAll(); ">
-              Tickets Per Hour
+            Tickets Per Hour
+            <a onclick="toggle(this, '#per-hour-help')">[show help]</a>
+            <span id="time-chart-reset"
+              data-reset-script="javascript:timeChart.filterAll();dc.redrawAll();">
             </span>
-            <div class="chart-notes" id="time-chart-filter" style="display: none">
-            </div>
           </div>
+
+          <div class="chart-notes" id="per-hour-help" style="display: none">
+            This chart plots the number of tickets per hour as a function of
+            the date. Individual date ranges can be selected via a sliding
+            window — click on the chart and drag the filter over the desired
+            date range.
+          </div>
+
+          <div class="chart-notes" id="time-chart-filter" style="display: none">
+          </div>
+
           <div class="chart-stage">
             <div id="time-chart" style="width: 100%;"></div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- 3rd row -->
     <div class='row'>
-
       <div class="col-xs-6 col-md-3">
 
         <!-- Zip Codes -->
         <div class="chart-wrapper">
           <div class="chart-title">
-            <span id="zipcode-chart-reset" title='By Zip Code'
-              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll(); ">
-              By Zip Code
+            Tickets By Zip Code
+            <a onclick="toggle(this, '#zipcode-help')">[show help]</a>
+
+            <span id="zipcode-chart-reset"
+              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
             </span>
           </div>
+
+          <div class="chart-notes" id="zipcode-help" style="display: none">
+            This chart gives the number of tickets as a function of
+            zip code. Individual zip codes can be selected by clicking on
+            specific bars of the chart. When hovering over a bar, the
+            corresponding zip code will be highlighted
+            on the map.
+          </div>
+
           <div class="chart-stage">
             <div id="zipcode-row-chart" style="width: 115%;"></div>
           </div>
         </div>
+
       </div>
 
       <div class="col-xs-6 col-md-3">
@@ -248,15 +286,27 @@
         <!-- Day-Hour Heat Map -->
         <div class="chart-wrapper">
           <div class="chart-title">
-            <span id="dayhour-chart-reset" title='Hourly Average Per Week'
-              data-reset-script="javascript:heatChart.filterAll();dc.redrawAll(); ">
-              Hourly Average Per Week
+            Hourly Average Per Week
+            <a onclick="toggle(this, '#heatmap-help')">[show help]</a>
+
+            <span id="dayhour-chart-reset"
+              data-reset-script="javascript:heatChart.filterAll();dc.redrawAll();">
             </span>
           </div>
+
+          <div class="chart-notes" id="heatmap-help" style="display: none">
+            This chart shows the number of tickets as a function of hour
+            (y axis) and day of week (x axis). Filter by time and day of
+            week by clicking on the desired square. Clicking on
+            an axis label will select the entire row or column. Hover over
+            a square to show the total number of tickets issued.
+          </div>
+
           <div class="chart-stage">
             <div id="day-hour-chart" style="width: 115%;"></div>
           </div>
         </div>
+
       </div>
 
       <div class="col-xs-12 col-md-6">
@@ -264,11 +314,21 @@
         <!-- Map  -->
         <div class="chart-wrapper">
           <div class="chart-title">
-            <span id="map-reset" title='Density of Tickets across Philadelphia'
-              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll(); ">
-              Density of Tickets across Philadelphia
+            Density of Tickets across Philadelphia
+            <a onclick="toggle(this, '#map-help')">[show help]</a>
+
+            <span id="map-reset"
+              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
             </span>
           </div>
+
+          <div class="chart-notes" id="map-help" style="display: none">
+            A density map of tickets across Philadelphia. Individual
+            zip codes can be selected by clicking on the highlighted area
+            on the map. Hovering over density hexagons will show the total number
+            of tickets in that density bin.
+          </div>
+
           <script>
             $('#getDataButton').on('click', function (e) {
               var month = document.getElementById('month').value;
@@ -301,11 +361,21 @@
             <!-- Type of ticket -->
             <div class="chart-wrapper">
               <div class="chart-title">
-                <span id="desc-chart-reset" title='Types of Tickets'
-                  data-reset-script="javascript:descChart.filterAll();dc.redrawAll(); ">
-                  Types of Tickets
+                Types of Tickets
+                <a onclick="toggle(this, '#type-help')">[show help]</a>
+
+                <span id="desc-chart-reset"
+                  data-reset-script="javascript:descChart.filterAll();dc.redrawAll();">
                 </span>
               </div>
+
+              <div class="chart-notes" id="type-help" style="display: none">
+                This chart shows the number of tickets as a function of
+                the violation type. Individual types can be selected by
+                clicking on specific bars of the chart.
+              </div>
+
+
               <div class="chart-stage">
                 <div id="ticket-type-row-chart" style="width: 100%;"></div>
               </div>
@@ -317,11 +387,21 @@
             <!-- Issuing agency -->
             <div class="panel chart-wrapper">
               <div class="chart-title">
-                <span id="agency-chart-reset" title='Issuing Agency'
-                  data-reset-script="javascript:agencyChart.filterAll();dc.redrawAll(); ">
-                  Issuing Agency
+                Issuing Agency
+                <a onclick="toggle(this, '#agency-help')">[show help]</a>
+
+                <span id="agency-chart-reset"
+                  data-reset-script="javascript:agencyChart.filterAll();dc.redrawAll();">
                 </span>
               </div>
+
+              <div class="chart-notes" id="agency-help" style="display: none">
+                This chart gives the number of tickets as a function of
+                the issuing agency. Select a specific issuing agency by
+                clicking on the desired bar of the chart. Note that
+                the x axis is shown on a log scale.
+              </div>
+
               <div class="chart-stage">
                 <div id="agency-row-chart" style="width: 100%;"></div>
               </div>

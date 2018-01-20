@@ -174,7 +174,7 @@ background-color: white;
 #loading-copy {
   position: absolute;
   top: 130px;
-  left: 5px;
+  left: 0px;
   font-size: 20px;
   font-weight: 200;
 }
