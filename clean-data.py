@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # columns to save
     cols_to_keep = ['latitude', 'longitude', 'timestamp', 'fine',
                     'violation_location_zip', 'dayofweek', 'hour',
-                    'violation_description', 'issuing_agency'
+                    'violation_description', 'issuing_agency', 'location'
                     ]
 
     # write out each month/year
