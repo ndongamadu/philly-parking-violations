@@ -11,7 +11,8 @@ function getDataJSON(callback, month, year) {
     .done(function(data) {
       document.getElementById('loading').style.display = 'none'; // hide loading page
     })
-    .fail(function() { // show the error message
+    .fail(function(error) { // show the error message
+      console.log("error: ", error);
       document.getElementById('loading').style.display = 'none';
       document.getElementById('error-wrapper').style.display = 'block';
     });
@@ -21,7 +22,7 @@ function getDataJSON(callback, month, year) {
 function makeDashboard(recordsJson) {
 
   // Initialize the leaflet map
-  map = L.map('map', {zoomControl: false}).setView([39.952583, -75.165222], 11);
+  map = L.map('map', {zoomControl: false}).setView([39.985, -75.165222], 11);
 
   // Overlays layer group will hold the hex bin layer
   overlays = L.layerGroup().addTo(map);
@@ -102,6 +103,8 @@ function makeDashboard(recordsJson) {
   var descDim = ndx.dimension(function(d) { return d["violation_description"]; });
   var dayhourDim = ndx.dimension(function(d) { return [d['dayofweek'], d['hour']]})
   var agencyDim = ndx.dimension(function(d) { return d["issuing_agency"]; });
+  var latlngDim = ndx.dimension(function(d) { return [d['latitude'], d['longitude'],
+                                d['location'], d['violation_location_zip'], d['violation_description']]})
   var allDim = ndx.dimension(function(d) {return d;});
 
   // Group data
@@ -111,6 +114,7 @@ function makeDashboard(recordsJson) {
   var agencyCountGroup = agencyDim.group().reduceCount();
   var descGroup = descDim.group();
   var dayhourGroup = dayhourDim.group().reduceCount();
+  var latlngGroup = latlngDim.group().reduceCount();
   var all = ndx.groupAll();
 
   // Min and Max date for axis bounds
@@ -154,6 +158,47 @@ function makeDashboard(recordsJson) {
   agencyChart = dc.rowChart("#agency-row-chart");
   heatChart = dc.heatMap("#day-hour-chart");
   timeChart = dc.barChart("#time-chart");
+  hotspotChart = dc.dataTable(".hot-spot-table");
+
+  // data table of hot spots
+  hotspotChart
+    .width(100)
+    .height(300)
+    .dimension(latlngGroup)
+    .size(10)
+    .showGroups(false)
+    .group(function (d) { return [d.latitude, d.longitude, d.location,
+                  d.violation_location_zip, d.violation_description] })
+    .columns([{
+                label: "Location Block",
+                format: function (d) { return d.key[2] }
+              },
+              {
+                label: "Zip Code",
+                format: function (d) { return d.key[3] }
+              },
+              {
+                label: "Latitude",
+                format: function (d) { return d.key[0] }
+              },
+              {
+                label: "Longitude",
+                format: function (d) { return d.key[1] }
+              },
+              {
+                label: "Ticket Type",
+                format: function (d) { return d.key[4] }
+              },
+              {
+                label: "# of Tickets",
+                format: function (d) { console.log(d); return d.value }
+              }
+              ])
+    .sortBy(function (d) { return d.value })
+    .order(d3.descending)
+    .on('renderlet', function (table) {
+    table.selectAll('.hot-spot-table').classed('info', true);
+  });
 
   // Bar chart to show number of tickets per hour
   timeChart
@@ -226,7 +271,7 @@ function makeDashboard(recordsJson) {
 
     // Row chart showing violation description
     descChart
-      .width(300)
+      .width(250)
       .height(400)
       .dimension(descDim)
       .group(descGroup)
@@ -242,8 +287,8 @@ function makeDashboard(recordsJson) {
 
     // Row chart showing type of agency
     agencyChart
-      .width(400)
-      .height(180)
+      .width(250)
+      .height(400)
       .dimension(agencyDim)
       .group(agencyGroup)
       .colors('#6baed6')
@@ -251,7 +296,6 @@ function makeDashboard(recordsJson) {
       .on('postRender', save_first_order())
       .useViewBoxResizing(true)
       .on('filtered', function (chart) {
-          displayAgencyFilter(chart);
           addHexLayer(allDim.top(Infinity));
           toggleReset(chart, 'agency-chart-reset');
 
@@ -265,19 +309,6 @@ function makeDashboard(recordsJson) {
                   .domain([.5, 10*ndx.size()]));
     agencyChart.xAxis().scale(agencyChart.x());
 
-
-    // Toggle the reset all text for filters
-    function toggleResetAll(chart) {
-      var filters = chart.filters();
-      var t = document.getElementById("reset-all");
-      if(filters.length) {
-          t.style.display = 'block';
-      }
-      else {
-        t.style.display = 'none'
-      }
-    }
-
     // Toggle reset text for individual chart
     function toggleReset(chart, id) {
       var filters = chart.filters();
@@ -288,21 +319,6 @@ function makeDashboard(recordsJson) {
       }
       else {
         t.innerHTML = t.title;
-      }
-      toggleResetAll(chart);
-    }
-
-    // Display agency filters
-    function displayAgencyFilter(chart) {
-      var filters = chart.filters();
-      var t = document.getElementById("agency-chart-filter");
-      if(filters.length) {
-          t.innerHTML = "<b>selected</b>: " + filters;
-          t.style.display = 'block';
-      }
-      else {
-        t.innerHTML = "";
-        t.style.display = 'none'
       }
     }
 
