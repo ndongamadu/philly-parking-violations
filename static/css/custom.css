@@ -18,7 +18,13 @@
   }
 }
 
+.nav.navbar-nav.navbar-right li a:hover {
+    color: #C0C0C0;
+}
 
+.nav.navbar-nav.navbar-left li a:hover {
+    color: #C0C0C0;
+}
 
 .dc-chart g.row text {
     fill: black;
