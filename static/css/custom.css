@@ -8,13 +8,13 @@
 
 @media (max-width: 991px) {
   .hot-spot-table{
-    font-size: 1.5vw;
+    font-size: 1.8vw;
   }
 }
 
 @media (min-width: 992px) {
   .hot-spot-table{
-    font-size: 0.9vw;
+    font-size: 1vw;
   }
 }
 

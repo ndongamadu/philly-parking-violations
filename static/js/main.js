@@ -103,8 +103,7 @@ function makeDashboard(recordsJson) {
   var descDim = ndx.dimension(function(d) { return d["violation_description"]; });
   var dayhourDim = ndx.dimension(function(d) { return [d['dayofweek'], d['hour']]})
   var agencyDim = ndx.dimension(function(d) { return d["issuing_agency"]; });
-  var latlngDim = ndx.dimension(function(d) { return [d['latitude'], d['longitude'],
-                                d['location'], d['violation_location_zip'], d['violation_description']]})
+  var latlngDim = ndx.dimension(function(d) { return [d['location'], d['violation_location_zip'], d['violation_description']]})
   var allDim = ndx.dimension(function(d) {return d;});
 
   // Group data
@@ -167,30 +166,24 @@ function makeDashboard(recordsJson) {
     .dimension(latlngGroup)
     .size(10)
     .showGroups(false)
-    .group(function (d) { return [d.latitude, d.longitude, d.location,
-                  d.violation_location_zip, d.violation_description] })
+    .group(function (d) { return [
+                  d.location,
+                  d.violation_location_zip,
+                  d.violation_description] })
     .columns([{
                 label: "Location Block",
-                format: function (d) { return d.key[2] }
-              },
-              {
-                label: "Zip Code",
-                format: function (d) { return d.key[3] }
-              },
-              {
-                label: "Latitude",
                 format: function (d) { return d.key[0] }
               },
               {
-                label: "Longitude",
+                label: "Zip Code",
                 format: function (d) { return d.key[1] }
               },
               {
                 label: "Ticket Type",
-                format: function (d) { return d.key[4] }
+                format: function (d) { return d.key[2] }
               },
               {
-                label: "# of Tickets",
+                label: "Number of Tickets",
                 format: function (d) { return d.value }
               }
               ])
@@ -271,7 +264,7 @@ function makeDashboard(recordsJson) {
     // Row chart showing violation description
     descChart
       .width(250)
-      .height(400)
+      .height(390)
       .dimension(descDim)
       .group(descGroup)
       .colors('#6baed6')
@@ -287,7 +280,7 @@ function makeDashboard(recordsJson) {
     // Row chart showing type of agency
     agencyChart
       .width(250)
-      .height(400)
+      .height(390)
       .dimension(agencyDim)
       .group(agencyGroup)
       .colors('#6baed6')
