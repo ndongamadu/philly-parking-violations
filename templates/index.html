@@ -1,11 +1,12 @@
 <html>
+
 <head>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112039180-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'UA-112039180-1');
@@ -14,12 +15,12 @@
   <title>Philly Parking Violations</title>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/static/lib/leaflet/1.2.0/css/leaflet.css"/>
+  <link rel="stylesheet" href="/static/lib/leaflet/1.2.0/css/leaflet.css" />
   <link rel="stylesheet" href="/static/lib/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/static/lib/font-awesome/4.7.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" href="/static/lib/dc/2.1.9/dc.min.css"/>
+  <link rel="stylesheet" href="/static/lib/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/static/lib/dc/2.1.9/dc.min.css" />
   <link rel="stylesheet" href="/static/lib/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-  <link rel="stylesheet" href="/static/css/leaflet.zoomhome.css"/>
+  <link rel="stylesheet" href="/static/css/leaflet.zoomhome.css" />
   <link rel="stylesheet" href="/static/css/keen-dashboards.css">
   <link rel="stylesheet" href="/static/css/custom.css">
 
@@ -50,7 +51,8 @@
   <script src="/static/js/dc.min.js"></script>
 
   <!-- Bootstrap -->
-  <script src="/static/lib/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="/static/lib/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
   <script src="/static/lib/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 </head>
 
@@ -102,16 +104,13 @@
         <div class='panel' style='padding: 5px'>
           <p style="font-size: 16px"><b>Welcome!</b></p>
 
-          <p>Choose a month and year to explore
-            parking violation trends across Philadelphia during that time.
-            Data ranges from 2012 to 2016 and is presented on a monthly basis.
+          <p>Choose a month and year to explore parking violation trends across Philadelphia during that time. Data ranges
+            from 2012 to 2017 and is presented on a monthly basis.
           </p>
           <p>
             <b>Applying filters:</b>
-            The charts and map below are interactive, and the
-            data can be filtered in several different ways.
-            Available filters include: date range, hour and day of week,
-            zip code, ticket issuing agency, and type of ticket.
+            The charts and map below are interactive, and the data can be filtered in several different ways. Available filters include:
+            date range, hour and day of week, zip code, ticket issuing agency, and type of ticket.
           </p>
           <p>
             <b>Help:</b>
@@ -154,7 +153,8 @@
                     <option>2013</option>
                     <option>2014</option>
                     <option>2015</option>
-                    <option selected>2016</option>
+                    <option>2016</option>
+                    <option selected>2017</option>
                   </select>
                 </div>
               </div>
@@ -193,20 +193,19 @@
         <!-- Most common tickets -->
         <div class="chart-wrapper">
           <div class="chart-title">
-              Top 10 Most Common Tickets
-              <a onclick="toggle(this, '#top-10-help')">[show help]</a>
+            Top 10 Most Common Tickets
+            <a onclick="toggle(this, '#top-10-help')">[show help]</a>
           </div>
           <div class="chart-notes" id="top-10-help" style="display: none">
-            This table gives the top 10 most common ticket locations for the
-            currently selected data. The table is automatically
-            updated as filters are applied to the charts below.
+            This table gives the top 10 most common ticket locations for the currently selected data. The table is automatically updated
+            as filters are applied to the charts below.
           </div>
           <table class="table table-responsive table-hover hot-spot-table">
           </table>
         </div>
 
         <script type="text/javascript">
-          function toggle (t, id) {
+          function toggle(t, id) {
             if (t.innerHTML == "[hide help]") {
               t.innerHTML = "[show help]";
               $(id).hide()
@@ -229,16 +228,13 @@
           <div class="chart-title">
             Tickets Per Hour
             <a onclick="toggle(this, '#per-hour-help')">[show help]</a>
-            <span id="time-chart-reset"
-              data-reset-script="javascript:timeChart.filterAll();dc.redrawAll();">
+            <span id="time-chart-reset" data-reset-script="javascript:timeChart.filterAll();dc.redrawAll();">
             </span>
           </div>
 
           <div class="chart-notes" id="per-hour-help" style="display: none">
-            This chart plots the number of tickets per hour as a function of
-            the date. Individual date ranges can be selected via a sliding
-            window — click on the chart and drag the filter over the desired
-            date range.
+            This chart plots the number of tickets per hour as a function of the date. Individual date ranges can be selected via a sliding
+            window — click on the chart and drag the filter over the desired date range.
           </div>
 
           <div class="chart-notes" id="time-chart-filter" style="display: none">
@@ -261,17 +257,13 @@
             Tickets By Zip Code
             <a onclick="toggle(this, '#zipcode-help')">[show help]</a>
 
-            <span id="zipcode-chart-reset"
-              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
+            <span id="zipcode-chart-reset" data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
             </span>
           </div>
 
           <div class="chart-notes" id="zipcode-help" style="display: none">
-            This chart gives the number of tickets as a function of
-            zip code. Individual zip codes can be selected by clicking on
-            specific bars of the chart. When hovering over a bar, the
-            corresponding zip code will be highlighted
-            on the map.
+            This chart gives the number of tickets as a function of zip code. Individual zip codes can be selected by clicking on specific
+            bars of the chart. When hovering over a bar, the corresponding zip code will be highlighted on the map.
           </div>
 
           <div class="chart-stage">
@@ -289,17 +281,14 @@
             Hourly Ticketing By Week Day
             <a onclick="toggle(this, '#heatmap-help')">[show help]</a>
 
-            <span id="dayhour-chart-reset"
-              data-reset-script="javascript:heatChart.filterAll();dc.redrawAll();">
+            <span id="dayhour-chart-reset" data-reset-script="javascript:heatChart.filterAll();dc.redrawAll();">
             </span>
           </div>
 
           <div class="chart-notes" id="heatmap-help" style="display: none">
-            This chart shows the number of tickets as a function of hour
-            (y axis) and day of week (x axis). Filter by time and day of
-            week by clicking on the desired square. Clicking on
-            an axis label will select the entire row or column. Hover over
-            a square to show the total number of tickets issued.
+            This chart shows the number of tickets as a function of hour (y axis) and day of week (x axis). Filter by time and day of
+            week by clicking on the desired square. Clicking on an axis label will select the entire row or column. Hover
+            over a square to show the total number of tickets issued.
           </div>
 
           <div class="chart-stage">
@@ -317,23 +306,20 @@
             Density of Tickets across Philadelphia
             <a onclick="toggle(this, '#map-help')">[show help]</a>
 
-            <span id="map-reset"
-              data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
+            <span id="map-reset" data-reset-script="javascript:zipcodeChart.filterAll();dc.redrawAll();">
             </span>
           </div>
 
           <div class="chart-notes" id="map-help" style="display: none">
-            A density map of tickets across Philadelphia. Individual
-            zip codes can be selected by clicking on the highlighted area
-            on the map. Hovering over density hexagons will show the total number
-            of tickets in that density bin.
+            A density map of tickets across Philadelphia. Individual zip codes can be selected by clicking on the highlighted area on
+            the map. Hovering over density hexagons will show the total number of tickets in that density bin.
           </div>
 
           <script>
             $('#getDataButton').on('click', function (e) {
               var month = document.getElementById('month').value;
               var year = document.getElementById('year').value;
-              month = new Date(Date.parse(month +" 1, 2018")).getMonth()+1;
+              month = new Date(Date.parse(month + " 1, 2018")).getMonth() + 1;
 
               // show the loading page
               $('#loading').show();
@@ -347,7 +333,7 @@
 
               // get the new data
               getDataJSON(makeDashboard, month, year);
-          })
+            })
           </script>
 
           <div class="chart-stage">
@@ -364,15 +350,13 @@
                 Types of Tickets
                 <a onclick="toggle(this, '#type-help')">[show help]</a>
 
-                <span id="desc-chart-reset"
-                  data-reset-script="javascript:descChart.filterAll();dc.redrawAll();">
+                <span id="desc-chart-reset" data-reset-script="javascript:descChart.filterAll();dc.redrawAll();">
                 </span>
               </div>
 
               <div class="chart-notes" id="type-help" style="display: none">
-                This chart shows the number of tickets as a function of
-                the violation type. Individual types can be selected by
-                clicking on specific bars of the chart.
+                This chart shows the number of tickets as a function of the violation type. Individual types can be selected by clicking
+                on specific bars of the chart.
               </div>
 
 
@@ -390,16 +374,13 @@
                 Issuing Agency
                 <a onclick="toggle(this, '#agency-help')">[show help]</a>
 
-                <span id="agency-chart-reset"
-                  data-reset-script="javascript:agencyChart.filterAll();dc.redrawAll();">
+                <span id="agency-chart-reset" data-reset-script="javascript:agencyChart.filterAll();dc.redrawAll();">
                 </span>
               </div>
 
               <div class="chart-notes" id="agency-help" style="display: none">
-                This chart gives the number of tickets as a function of
-                the issuing agency. Select a specific issuing agency by
-                clicking on the desired bar of the chart. Note that
-                the x axis is shown on a log scale.
+                This chart gives the number of tickets as a function of the issuing agency. Select a specific issuing agency by clicking
+                on the desired bar of the chart. Note that the x axis is shown on a log scale.
               </div>
 
               <div class="chart-stage">
@@ -412,22 +393,22 @@
     </div>
 
     <!-- Footer -->
-	<footer id="footer">
+    <footer id="footer">
 
-    <div class="social icons">
-      <a href="https://github.com/nickhand" class="icon circle fa-github"><span class="label">Github</span></a>
-      <a href="https://twitter.com/nicholashand" class="icon circle fa-twitter"><span class="label">Twitter</span></a>
-      <a href="https://www.linkedin.com/in/nickhand1" class="icon circle fa-linkedin"><span class="label">Linkedin</span></a>
-    </div>
- 		<div class="copyright">
-			<div class="menu">
-				<p>&copy; Nick Hand 2018</p>
-				<p>Data via <a href="https://www.opendataphilly.org/dataset/parking-violations" target="_blank">OpenDataPhilly;</a>
-         Dashboard template via <a href="http://keen.github.io/dashboards/" target="_blank">keen.io</a>
-        </p>
-			</div>
-    </div>
-	</footer>
+      <div class="social icons">
+        <a href="https://github.com/nickhand" class="icon circle fa-github"><span class="label">Github</span></a>
+        <a href="https://twitter.com/nicholashand" class="icon circle fa-twitter"><span class="label">Twitter</span></a>
+        <a href="https://www.linkedin.com/in/nickhand1" class="icon circle fa-linkedin"><span class="label">Linkedin</span></a>
+      </div>
+      <div class="copyright">
+        <div class="menu">
+          <p>&copy; Nick Hand 2018</p>
+          <p>Data via <a href="https://www.opendataphilly.org/dataset/parking-violations" target="_blank">OpenDataPhilly;</a>
+            Dashboard template via <a href="http://keen.github.io/dashboards/" target="_blank">keen.io</a>
+          </p>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <!-- the zip code geojson data -->
@@ -437,4 +418,5 @@
   <script type="text/javascript" src="/static/js/main.js"></script>
 
 </body>
+
 </html>
