@@ -532,8 +532,8 @@ function addHexLayer(recordsJson) {
 }
 
 // Get data and make dashboard
-// Default is January 2016
-getDataJSON(makeDashboard, 1, 2016);
+// Default is January 2017
+getDataJSON(makeDashboard, 1, 2017);
 
 // Show the loading page on load
 window.onload = function(e){
