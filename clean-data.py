@@ -2,10 +2,11 @@ import pandas as pd
 import numpy
 import json
 
+
 def clean(df):
 
     # convert to datetime
-    dt = pd.to_datetime(df['issue_date_and_time'])
+    dt = pd.to_datetime(df['issue_datetime'])
 
     # add individual datetime columns
     df['month'] = dt.dt.month
@@ -14,13 +15,10 @@ def clean(df):
     df['dayofweek'] = dt.dt.dayofweek
     df['hour'] = dt.dt.hour
 
-    # fix longitude and latitude
-    df['latitude'] = numpy.where(df.lat.values > 0, df.lat.values, df.lng.values)
-    df['longitude'] = numpy.where(df.lng.values < 0, df.lng.values, df.lat.values)
-
     # categorize violation description
-    descs = df['violation_description'].unique()
-    df['short_desc'] = df['violation_description'].apply(lambda x: x[:10].strip())
+    descs = df['violation_desc'].unique()
+    df['short_desc'] = df['violation_desc'].apply(
+        lambda x: x[:10].strip())
 
     # group by description
     grps = df.groupby('short_desc')
@@ -40,29 +38,37 @@ def clean(df):
                 break
 
     # save top N, else set to OTHER
-    df['violation_description'] = df['short_desc'].map(lambda x: categories[x] if x in categories else 'OTHER')
-
-    # remove bad zip codes
-    df = df.loc[df['violation_location_zip']!=88888]
+    df['violation_desc'] = df['short_desc'].map(
+        lambda x: categories[x] if x in categories else 'OTHER')
 
     # fix issuing agency names
-    names = {'HOUSIN': 'HOUSING', 'POST O':'POST OFFICE', 'FAIRMN':'FAIRMOUNT'}
+    names = {'HOUSIN': 'HOUSING',
+             'POST O': 'POST OFFICE', 'FAIRMN': 'FAIRMOUNT'}
     for name in names:
-        index = df['issuing_agency']==name
+        index = df['issuing_agency'] == name
         df.loc[index, 'issuing_agency'] = names[name]
 
     # convert timestamp data to proper format
-    df['timestamp'] = dt.dt.strftime("%Y-%m-%d %H:00:00") # zero out minutes/seconds
+    df['timestamp'] = dt.dt.strftime(
+        "%Y-%m-%d %H:00:00")  # zero out minutes/seconds
 
+    # rename columns
+    df = df.rename(columns={'lat': 'latitude',
+                            'lon': 'longitude',
+                            'zip_code': 'violation_location_zip',
+                            'violation_desc': 'violation_description'})
     return df
+
 
 if __name__ == '__main__':
 
     # read the original data
     df = pd.read_csv('data/parking_violations.csv')
+    print('done reading...')
 
     # cleaned data frame
     cleaned = clean(df)
+    print('done cleaning...')
 
     # columns to save
     cols_to_keep = ['latitude', 'longitude', 'timestamp', 'fine',
@@ -71,11 +77,14 @@ if __name__ == '__main__':
                     ]
 
     # write out each month/year
-    for year in range(2012, 2017):
-        print("writing year %d..." %year)
-        for month in range(1, 13):
-            print("  writing month %d..." %month)
+    years = sorted(cleaned['year'].unique())
+    months = sorted(cleaned['month'].unique())
+    for year in years:
+        print("writing year %d..." % year)
+        for month in months:
+            print("  writing month %d..." % month)
 
-            df_clean = cleaned.loc[(df.month==month)&(df.year==year)]
+            df_clean = cleaned.loc[(df.month == month) & (df.year == year)]
             df_clean = df_clean[cols_to_keep].dropna()
-            df_clean.to_json('data/parking_violations_%d_%d.json.gz' %(month, year), compression='gzip')
+            df_clean.to_json('data/parking_violations_%d_%d.json.gz' %
+                             (month, year), compression='gzip')
